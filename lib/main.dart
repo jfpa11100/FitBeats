@@ -22,6 +22,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// API with audios: https://audiomack.com/data-api/docs
+
+
 // APIs TO HAVE IN MIND:
 // https://docs-en.kkbox.codes/#get-/tracks/{track_id}
 // https://developer.spotify.com/documentation/web-api/reference/get-track
