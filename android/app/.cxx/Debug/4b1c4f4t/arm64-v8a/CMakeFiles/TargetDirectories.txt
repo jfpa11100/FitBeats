@@ -1,0 +1,2 @@
+D:/Flutter Projects/FitBeats/android/app/.cxx/Debug/4b1c4f4t/arm64-v8a/CMakeFiles/edit_cache.dir
+D:/Flutter Projects/FitBeats/android/app/.cxx/Debug/4b1c4f4t/arm64-v8a/CMakeFiles/rebuild_cache.dir
