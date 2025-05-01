@@ -26,26 +26,31 @@ class MyApp extends StatelessWidget {
         ),
         textTheme: TextTheme(
           displayLarge: const TextStyle(
+            fontFamily: 'calSans',
             color: Colors.white,
             fontSize: 40,
             fontWeight: FontWeight.bold,
           ),
           titleLarge: const TextStyle(
+            fontFamily: 'calSans',
             color: Colors.white,
             fontSize: 30,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w500,
           ),
           bodyMedium: TextStyle(
+            fontFamily: 'schibstedGrotesk',
             color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.w500,
           ),
           bodySmall: TextStyle(
+            fontFamily: 'schibstedGrotesk',
             color: Colors.white,
             fontSize: 15,
             fontWeight: FontWeight.w300,
           ),
           displaySmall: TextStyle(
+            fontFamily: 'schibstedGrotesk',
             color: Colors.white,
             fontSize: 15,
             fontWeight: FontWeight.w300,
