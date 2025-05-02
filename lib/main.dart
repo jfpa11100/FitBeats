@@ -20,8 +20,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
           brightness: Brightness.dark,
           seedColor: Colors.purple,
-          primary: Colors.black,
-          secondary: Colors.white,
+          primary: Colors.white,
+          secondary: Colors.black,
           primaryContainer: Colors.black,
         ),
         textTheme: TextTheme(
@@ -29,19 +29,19 @@ class MyApp extends StatelessWidget {
             fontFamily: 'calSans',
             color: Colors.white,
             fontSize: 40,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
           titleLarge: const TextStyle(
             fontFamily: 'calSans',
             color: Colors.white,
             fontSize: 30,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w400,
           ),
           bodyMedium: TextStyle(
             fontFamily: 'schibstedGrotesk',
             color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
+            fontSize: 25,
+            fontWeight: FontWeight.w600,
           ),
           bodySmall: TextStyle(
             fontFamily: 'schibstedGrotesk',
