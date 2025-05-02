@@ -21,8 +21,9 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.dark,
           seedColor: Colors.purple,
           primary: Colors.white,
-          secondary: Colors.black,
+          secondary: const Color.fromARGB(255, 68, 83, 205),
           primaryContainer: Colors.black,
+          surface: Colors.black,
         ),
         textTheme: TextTheme(
           displayLarge: const TextStyle(
@@ -57,8 +58,18 @@ class MyApp extends StatelessWidget {
           ),
         ),
         appBarTheme: AppBarTheme(
-          backgroundColor: Theme.of(context).colorScheme.primary,
+          backgroundColor: Colors.black,
           titleTextStyle: Theme.of(context).textTheme.displayLarge,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            iconColor: Theme.of(context).colorScheme.primary,
+            backgroundColor: Theme.of(context).colorScheme.secondary,
+            textStyle: Theme.of(context).textTheme.bodyMedium,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
         ),
       ),
       home: SafeArea(child: const HomeScreen(title: 'FitBeats')),
