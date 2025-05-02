@@ -80,9 +80,32 @@ class MyApp extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(10.0),
             ),
           ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          labelStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontFamily: 'schibstedGrotesk',
+            fontWeight: FontWeight.w600,
+          ),
+          filled: true,
+          fillColor: const Color.fromARGB(255, 17, 18, 22),
+          contentPadding: EdgeInsets.symmetric(
+            vertical: 25.0,
+            horizontal: 20.0,
+          ),
+          //volver el input border redondeado sin que se vea el color,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(
+              color: Colors.transparent,
+              width: 0.0,
+            ),
+          ),
+          // border: InputBorder.none,
         ),
       ),
       home: SafeArea(child: const LoginScreen(title: 'FitBeats')),
