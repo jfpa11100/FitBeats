@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/ui/auth/login_screen.dart';
 import 'package:myapp/ui/home_screen.dart';
 
 void main() {
@@ -38,10 +39,16 @@ class MyApp extends StatelessWidget {
             fontSize: 30,
             fontWeight: FontWeight.w400,
           ),
-          bodyMedium: TextStyle(
+          titleMedium: TextStyle(
             fontFamily: 'schibstedGrotesk',
             color: Colors.white,
             fontSize: 25,
+            fontWeight: FontWeight.w600,
+          ),
+          bodyMedium: TextStyle(
+            fontFamily: 'schibstedGrotesk',
+            color: Colors.white,
+            fontSize: 20,
             fontWeight: FontWeight.w600,
           ),
           bodySmall: TextStyle(
@@ -63,16 +70,22 @@ class MyApp extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            iconColor: Theme.of(context).colorScheme.primary,
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            textStyle: Theme.of(context).textTheme.bodyMedium,
+            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+            iconColor: Colors.white,
+            backgroundColor: const Color.fromARGB(255, 68, 83, 205),
+            textStyle: TextStyle(
+              fontFamily: 'schibstedGrotesk',
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+            ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
           ),
         ),
       ),
-      home: SafeArea(child: const HomeScreen(title: 'FitBeats')),
+      home: SafeArea(child: const LoginScreen(title: 'FitBeats')),
     );
   }
 }
