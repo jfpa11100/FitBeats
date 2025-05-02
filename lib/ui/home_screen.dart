@@ -41,7 +41,7 @@ class _HomScreeneState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ActivityButton(icon: Icons.fitness_center, text: 'Fuerza'),
-                  ActivityButton(icon: Icons.self_improvement, text: 'yoga'),
+                  ActivityButton(icon: Icons.self_improvement, text: 'Yoga'),
                   ActivityButton(
                     icon: Icons.monitor_heart_rounded,
                     text: 'HIIT',
