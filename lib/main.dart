@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.black,
         colorScheme: ColorScheme.fromSeed(
           brightness: Brightness.dark,
-          seedColor: Colors.purple,
+          seedColor: const Color.fromARGB(255, 160, 34, 247),
           primary: Colors.white,
           secondary: const Color.fromARGB(255, 68, 83, 205),
           primaryContainer: Colors.black,
