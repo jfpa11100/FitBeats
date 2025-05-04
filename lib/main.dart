@@ -1,14 +1,23 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/ui/home_screen.dart';
+import 'package:myapp/ui/auth/login_screen.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+      apiKey: 'AIzaSyBsqMpAFnWC-_oXG1BNdscMxP5gHgJifo0',
+      appId: "1:923730790064:web:9b8742122b13e043ee9d75",
+      messagingSenderId: '923730790064',
+      projectId: "fitbeats-a8c2c",
+    ),
+  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,6 +29,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
           brightness: Brightness.dark,
           seedColor: const Color.fromARGB(255, 160, 34, 247),
+          onSecondary: const Color.fromARGB(255, 160, 34, 247),
           primary: Colors.white,
           secondary: const Color.fromARGB(255, 68, 83, 205),
           primaryContainer: Colors.black,
@@ -99,15 +109,12 @@ class MyApp extends StatelessWidget {
           //volver el input border redondeado sin que se vea el color,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: const BorderSide(
-              color: Colors.transparent,
-              width: 0.0,
-            ),
+            borderSide: const BorderSide(color: Colors.transparent, width: 0.0),
           ),
           // border: InputBorder.none,
         ),
       ),
-      home: SafeArea(child: const HomeScreen(title:'FitBeats')),
+      home: SafeArea(child: const LoginScreen(title: 'FitBeats')),
     );
   }
 }
