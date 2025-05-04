@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/services/auth/auth.dart';
 import 'package:myapp/ui/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -10,6 +11,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _rePasswordController = TextEditingController();
+  bool _isLogIn = true;
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,37 +39,65 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   TextFormField(
+                    controller: _emailController,
                     style: Theme.of(context).textTheme.bodySmall,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                    ),
+                    decoration: InputDecoration(labelText: 'Email'),
                   ),
                   SizedBox(height: 15),
                   TextFormField(
+                    controller: _passwordController,
                     style: Theme.of(context).textTheme.bodySmall,
-                    decoration: InputDecoration(
-                      labelText: 'Contraseña',
-                    ),
+                    decoration: InputDecoration(labelText: 'Contraseña'),
                     obscureText: true,
                   ),
+                  SizedBox(height: 15),
+                  if (!_isLogIn)
+                    TextFormField(
+                      controller: _rePasswordController,
+                      style: Theme.of(context).textTheme.bodySmall,
+                      decoration: InputDecoration(
+                        labelText: 'Confirma la contraseña',
+                      ),
+                      obscureText: true,
+                    ),
+                  SizedBox(height: 15),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 25.0),
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: ElevatedButton(
-                onPressed: () {
-                  //If Log in succesfull go to widget Home_Screen
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomeScreen(title: 'FitBeats'),
-                    ),
-                  );
-                },
-                child: Text(
-                  'Iniciar Sesión',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                onPressed:
+                    _isLoading
+                        ? null
+                        : () {
+                          if (_isLogIn) {
+                            _handleLogIn();
+                          } else {
+                            _handleSignUp();
+                          }
+                        },
+                child:
+                    _isLoading
+                        ? const CircularProgressIndicator()
+                        : Text(
+                          _isLogIn ? 'Iniciar Sesión' : 'Registrarse',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  _isLogIn = !_isLogIn;
+                });
+              },
+              child: Text(
+                _isLogIn
+                    ? '¿Aún no tienes una cuenta?'
+                    : '¿Ya tienes una cuenta?',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSecondary,
                 ),
               ),
             ),
@@ -70,5 +105,92 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _handleLogIn() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      await logIn();
+      if (mounted) {
+        Navigator.pushReplacement(
+          // Usar pushReplacement para evitar volver a la pantalla de login
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(title: 'FitBeats'),
+          ),
+        );
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error.toString())));
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _handleSignUp() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      await signUp();
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(title: 'FitBeats'),
+          ),
+        );
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error.toString())));
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> logIn() async {
+    try {
+      await Auth().signInWithEmailAndPassword(
+        _emailController.text,
+        _passwordController.text,
+      );
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> signUp() async {
+    String password = _passwordController.text;
+    String rePassword = _rePasswordController.text;
+
+    if (password != rePassword) {
+      throw 'Las contraseñas no coinciden';
+    }
+    try {
+      await Auth().signUpWithEmailAndPassword(
+        _emailController.text,
+        _passwordController.text,
+      );
+    } catch (error) {
+      rethrow;
+    }
   }
 }
