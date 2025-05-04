@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/ui/auth/login_screen.dart';
 import 'package:myapp/ui/home_screen.dart';
-import 'package:myapp/ui/playlist_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -86,7 +84,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: SafeArea(child: const PlaylistScreen()),
+      home: SafeArea(child: const HomeScreen(title:'FitBeats')),
     );
   }
 }
