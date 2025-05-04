@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/ui/widgets/activity_button.dart';
+import 'package:myapp/ui/playlist_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -41,7 +42,7 @@ class _HomScreeneState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ActivityButton(icon: Icons.fitness_center, text: 'Fuerza'),
-                  ActivityButton(icon: Icons.self_improvement, text: 'yoga'),
+                  ActivityButton(icon: Icons.self_improvement, text: 'Yoga'),
                   ActivityButton(
                     icon: Icons.monitor_heart_rounded,
                     text: 'HIIT',
@@ -114,7 +115,14 @@ class _HomScreeneState extends State<HomeScreen> {
               Text('Hoy', style: Theme.of(context).textTheme.titleMedium),
             ],
           ),
-          ElevatedButton(onPressed: () {}, child: Text('Buscar mi playlist')),
+          ElevatedButton(onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PlaylistScreen(),
+              ),
+            );
+          }, child: Text('Buscar mi playlist')),
         ],
       ),
     );

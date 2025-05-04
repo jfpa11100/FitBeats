@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/ui/auth/login_screen.dart';
 import 'package:myapp/ui/home_screen.dart';
 
 void main() {
@@ -85,7 +84,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: SafeArea(child: const LoginScreen(title: 'FitBeats')),
+      home: SafeArea(child: const HomeScreen(title:'FitBeats')),
     );
   }
 }
