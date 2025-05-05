@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/ui/favorite_list_screen.dart';
+import 'package:myapp/ui/home_screen.dart';
+import 'package:myapp/ui/widgets/favorite_icon.dart';
 import 'package:myapp/ui/widgets/song_title.dart';
 
 class PlaylistScreen extends StatefulWidget {
@@ -9,25 +12,27 @@ class PlaylistScreen extends StatefulWidget {
 }
 
 class _PlaylistScreenState extends State<PlaylistScreen> {
-  bool isFavorite = false; 
+  bool isFavorite = false;  
 
   void _toggleFavorite() {
     setState(() {
-      isFavorite = !isFavorite; 
+      isFavorite = !isFavorite;  
     });
-  }
 
-  Widget _buildSongTile(BuildContext context, String title, String artist, String duration) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(8),
-      splashColor: Colors.white10,
-      highlightColor: Colors.white12,
-      child: SongTile(
-        title: title,
-        artist: artist,
-        duration: duration,
+    final snackBar = SnackBar(
+      backgroundColor: const Color(0xFF9B5DE5),
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(seconds: 1),
+      content: Text(
+        isFavorite
+            ? 'Añadido a favoritos'
+            : 'Eliminado de favoritos',
+        style: TextStyle(
+          color: isFavorite ? Colors.black : Colors.white,
+          fontWeight: FontWeight.w500, fontFamily: 'calSans',),
       ),
     );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -50,7 +55,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
           const SizedBox(height: 16),
           Center(
             child: Stack(
-              alignment: Alignment.bottomRight, 
+              alignment: Alignment.bottomRight,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16),
@@ -61,14 +66,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                IconButton(
-                  icon: Icon(
-                    isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: Colors.white,
-                    size: 32,
-                  ),
-                  onPressed: _toggleFavorite, // Cambiar estado al hacer clic
-                ),
+                FavoriteIcon(isFavorite: isFavorite, onPressed: _toggleFavorite),
               ],
             ),
           ),
@@ -77,15 +75,59 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               children: [
-                _buildSongTile(context, "Overdrive", "FTBC Beyondfeat", "3:45"),
-                _buildSongTile(context, "Ignite", "The Reworkers", "2:40"),
-                _buildSongTile(context, "Strong Now", "Fortifiers", "3:37"),
-                _buildSongTile(context, "Keep Moving On", "Pushers", "3:25"),
+                SongTitle(title: "Overdrive", artist: "FTBC Beyondfeat", duration: "3:45"),
+                SongTitle(title: "Ignite", artist: "The Reworkers", duration: "2:40"),
+                SongTitle(title: "Strong Now", artist: "Fortifiers", duration: "3:37"),
+                SongTitle(title: "Keep Moving On", artist: "Pushers", duration: "3:25"),
               ],
             ),
           ),
         ],
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.black,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white54,
+        currentIndex: 1, // O el índice actual correspondiente
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HomeScreen(title: 'FitBeats',),
+                ),
+              );
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FavoriteListScreen(),
+                ),
+              );
+              break;
+
+              // Implementar navegación a perfil
+              
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Inicio',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite_border),
+            label: 'Favoritos',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            label: 'Perfil',
+          ),
+        ],
+      ),
+
     );
   }
 }
