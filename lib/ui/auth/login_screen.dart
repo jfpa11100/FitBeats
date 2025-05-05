@@ -79,7 +79,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                 child:
                     _isLoading
-                        ? const CircularProgressIndicator()
+                        ? const CircularProgressIndicator(
+                          padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 5.0),
+                        )
                         : Text(
                           _isLogIn ? 'Iniciar Sesión' : 'Registrarse',
                           style: Theme.of(context).textTheme.bodyMedium,
