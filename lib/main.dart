@@ -1,17 +1,22 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/ui/auth/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: FirebaseOptions(
-      apiKey: 'AIzaSyBsqMpAFnWC-_oXG1BNdscMxP5gHgJifo0',
-      appId: "1:923730790064:web:9b8742122b13e043ee9d75",
-      messagingSenderId: '923730790064',
-      projectId: "fitbeats-a8c2c",
-    ),
-  );
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: 'AIzaSyBsqMpAFnWC-_oXG1BNdscMxP5gHgJifo0',
+        appId: "1:923730790064:web:9b8742122b13e043ee9d75",
+        messagingSenderId: '923730790064',
+        projectId: "fitbeats-a8c2c",
+      ),
+    );
+  } else {
+    await Firebase.initializeApp();
+  }
   runApp(MyApp());
 }
 
