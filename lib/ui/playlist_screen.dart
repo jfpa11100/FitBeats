@@ -49,7 +49,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
       body: Column(
         children: [
           Text(
-            "Power Boost para correr bajo la lluvia",
+            "Power Boost para Correr Bajo la Lluvia",
             style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
           ),
           const SizedBox(height: 16),
