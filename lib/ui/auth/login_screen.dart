@@ -20,90 +20,93 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Column(
-              children: [
-                Image.asset('assets/images/logo.png', height: 200.0),
-                Text(
-                  widget.title,
-                  style: Theme.of(context).textTheme.displayLarge,
-                ),
-              ],
-            ),
-            SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18.0),
-              child: Column(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
                 children: [
-                  TextFormField(
-                    controller: _emailController,
-                    style: Theme.of(context).textTheme.bodySmall,
-                    decoration: InputDecoration(labelText: 'Email'),
+                  Image.asset('assets/images/logo.png', height: 200.0),
+                  Text(
+                    widget.title,
+                    style: Theme.of(context).textTheme.displayLarge,
                   ),
-                  SizedBox(height: 15),
-                  TextFormField(
-                    controller: _passwordController,
-                    style: Theme.of(context).textTheme.bodySmall,
-                    decoration: InputDecoration(labelText: 'Contraseña'),
-                    obscureText: true,
-                  ),
-                  SizedBox(height: 15),
-                  if (!_isLogIn)
-                    TextFormField(
-                      controller: _rePasswordController,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      decoration: InputDecoration(
-                        labelText: 'Confirma la contraseña',
-                      ),
-                      obscureText: true,
-                    ),
-                  SizedBox(height: 15),
                 ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: ElevatedButton(
-                onPressed:
-                    _isLoading
-                        ? null
-                        : () {
-                          if (_isLogIn) {
-                            _handleLogIn();
-                          } else {
-                            _handleSignUp();
-                          }
-                        },
-                child:
-                    _isLoading
-                        ? const CircularProgressIndicator(
-                          padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 5.0),
-                        )
-                        : Text(
-                          _isLogIn ? 'Iniciar Sesión' : 'Registrarse',
-                          style: Theme.of(context).textTheme.bodyMedium,
+              SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: _emailController,
+                      style: Theme.of(context).textTheme.bodySmall,
+                      decoration: InputDecoration(labelText: 'Email'),
+                    ),
+                    SizedBox(height: 15),
+                    TextFormField(
+                      controller: _passwordController,
+                      style: Theme.of(context).textTheme.bodySmall,
+                      decoration: InputDecoration(labelText: 'Contraseña'),
+                      obscureText: true,
+                    ),
+                    SizedBox(height: 15),
+                    if (!_isLogIn)
+                      TextFormField(
+                        controller: _rePasswordController,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        decoration: InputDecoration(
+                          labelText: 'Confirma la contraseña',
                         ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _isLogIn = !_isLogIn;
-                });
-              },
-              child: Text(
-                _isLogIn
-                    ? '¿Aún no tienes una cuenta?'
-                    : '¿Ya tienes una cuenta?',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSecondary,
+                        obscureText: true,
+                      ),
+                    SizedBox(height: 15),
+                  ],
                 ),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: ElevatedButton(
+                  onPressed:
+                      _isLoading
+                          ? null
+                          : () {
+                            if (_isLogIn) {
+                              _handleLogIn();
+                            } else {
+                              _handleSignUp();
+                            }
+                          },
+                  child:
+                      _isLoading
+                          ? const CircularProgressIndicator(
+                            padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 5.0),
+                          )
+                          : Text(
+                            _isLogIn ? 'Iniciar Sesión' : 'Registrarse',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _isLogIn = !_isLogIn;
+                  });
+                },
+                child: Text(
+                  _isLogIn
+                      ? '¿Aún no tienes una cuenta?'
+                      : '¿Ya tienes una cuenta?',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSecondary,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
