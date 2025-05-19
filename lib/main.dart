@@ -1,23 +1,26 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/ui/auth/login_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
+  await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
   if (kIsWeb) {
     await Firebase.initializeApp(
       options: FirebaseOptions(
-        apiKey: 'AIzaSyBsqMpAFnWC-_oXG1BNdscMxP5gHgJifo0',
-        appId: "1:923730790064:web:9b8742122b13e043ee9d75",
-        messagingSenderId: '923730790064',
-        projectId: "fitbeats-a8c2c",
+        apiKey: dotenv.env['API_KEY']!,
+        appId: dotenv.env['APP_ID']!,
+        messagingSenderId: dotenv.env['SENDER_ID']!,
+        projectId: dotenv.env['PROJECT_ID']!,
       ),
     );
   } else {
     await Firebase.initializeApp();
   }
-  runApp(MyApp());
+  runApp(ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
