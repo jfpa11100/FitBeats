@@ -1,5 +1,9 @@
 {
     "IDX.aI.enableInlineCompletion": true,
     "IDX.aI.enableCodebaseIndexing": true,
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "cSpell.language": "en,es-ES",
+    "cSpell.words": [
+        "HIIT"
+    ]
 }

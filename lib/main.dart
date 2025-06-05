@@ -114,12 +114,10 @@ class MyApp extends StatelessWidget {
             vertical: 25.0,
             horizontal: 20.0,
           ),
-          //volver el input border redondeado sin que se vea el color,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
             borderSide: const BorderSide(color: Colors.transparent, width: 0.0),
           ),
-          // border: InputBorder.none,
         ),
       ),
       home: SafeArea(child: const LoginScreen(title: 'FitBeats')),
