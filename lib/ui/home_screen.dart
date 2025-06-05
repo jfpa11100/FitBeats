@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:myapp/controllers/location_controller.dart';
 import 'package:myapp/ui/widgets/activity_button.dart';
 import 'package:myapp/ui/playlist_screen.dart';
+import 'package:myapp/ui/widgets/weather_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
   final String title;
   @override
-  State<HomeScreen> createState() => _HomScreeneState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomScreeneState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> {
+  bool authLocation = false;
+  late Position location;
+
+  @override
+  void initState() {
+    super.initState();
+    LocationController().getLocation().then(
+      (pos) => {
+        setState(() {
+          location = pos;
+          authLocation = true;
+        }),
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,33 +115,28 @@ class _HomScreeneState extends State<HomeScreen> {
               ),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Icon(Icons.cloudy_snowing, size: 50.0),
-              Column(
+          authLocation
+              ? WeatherWidget(location: location)
+              : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const CircularProgressIndicator(),
+                  SizedBox(width: 10),
                   Text(
-                    'Lluvia 12°',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  Text(
-                    'Ciudad, País',
+                    'Habilita y activa la ubicación\ndel dispositivo para\nfuncionar correctamente',
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
               ),
-              Text('Hoy', style: Theme.of(context).textTheme.titleMedium),
-            ],
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PlaylistScreen()),
+              );
+            },
+            child: Text('Buscar mi playlist'),
           ),
-          ElevatedButton(onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PlaylistScreen(),
-              ),
-            );
-          }, child: Text('Buscar mi playlist')),
         ],
       ),
     );
