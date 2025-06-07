@@ -7,44 +7,23 @@ String playlistToJson(Playlist data) => json.encode(data.toJson());
 class Playlist {
     String description;
     String id;
-    String name;
+    String title;
 
     Playlist({
         required this.description,
         required this.id,
-        required this.name,
+        required this.title,
     });
 
     factory Playlist.fromJson(Map<String, dynamic> json) => Playlist(
         description: json["description"],
         id: json["id"],
-        name: json["name"],
+        title: json["name"],
     );
 
     Map<String, dynamic> toJson() => {
         "description": description,
         "id": id,
-        "name": name,
-    };
-}
-
-
-class Tracks {
-    String href;
-    int total;
-
-    Tracks({
-        required this.href,
-        required this.total,
-    });
-
-    factory Tracks.fromJson(Map<String, dynamic> json) => Tracks(
-        href: json["href"],
-        total: json["total"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "href": href,
-        "total": total,
+        "name": title,
     };
 }
