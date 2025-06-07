@@ -1,43 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/ui/favorite_list_screen.dart';
-import 'package:myapp/ui/home_screen.dart';
-import 'package:myapp/ui/widgets/favorite_icon.dart';
-import 'package:myapp/ui/widgets/song_title.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/playlist_provider.dart';
+import 'widgets/favorite_icon.dart';
+import 'widgets/song_title.dart';
+import 'home_screen.dart';
+import 'favorite_list_screen.dart';
 
-class PlaylistScreen extends StatefulWidget {
+class PlaylistScreen extends ConsumerWidget {
   const PlaylistScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _PlaylistScreenState createState() => _PlaylistScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final playlistController = ref.watch(playlistProvider);
 
-class _PlaylistScreenState extends State<PlaylistScreen> {
-  bool isFavorite = false;  
-
-  void _toggleFavorite() {
-    setState(() {
-      isFavorite = !isFavorite;  
-    });
-
-    final snackBar = SnackBar(
-      backgroundColor: const Color(0xFF9B5DE5),
-      behavior: SnackBarBehavior.floating,
-      duration: const Duration(seconds: 1),
-      content: Text(
-        isFavorite
-            ? 'Añadido a favoritos'
-            : 'Eliminado de favoritos',
-        style: TextStyle(
-          color: isFavorite ? Colors.black : Colors.white,
-          fontWeight: FontWeight.w500, fontFamily: 'calSans',),
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -67,20 +42,40 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                FavoriteIcon(isFavorite: isFavorite, onPressed: _toggleFavorite),
+                FavoriteIcon(
+                  isFavorite: playlistController.isFavorite,
+                  onPressed: () {
+                    ref.read(playlistProvider).toggleFavorite();
+                    final isFav = ref.read(playlistProvider).isFavorite;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: const Color(0xFF9B5DE5),
+                        content: Text(
+                          isFav ? 'Añadido a favoritos' : 'Eliminado de favoritos',
+                          style: TextStyle(
+                            color: isFav ? Colors.black : Colors.white,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'calSans',
+                          ),
+                        ),
+                        duration: const Duration(seconds: 1),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),
           const SizedBox(height: 24),
           Expanded(
-            child: ListView(
+            child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              children: [
-                SongTitle(title: "Overdrive", artist: "FTBC Beyondfeat", duration: "3:45"),
-                SongTitle(title: "Ignite", artist: "The Reworkers", duration: "2:40"),
-                SongTitle(title: "Strong Now", artist: "Fortifiers", duration: "3:37"),
-                SongTitle(title: "Keep Moving On", artist: "Pushers", duration: "3:25"),
-              ],
+              itemCount: playlistController.songs.length,
+              itemBuilder: (context, index) {
+                final song = playlistController.songs[index];
+                return SongTitle(song: song);
+              },
             ),
           ),
         ],
@@ -89,46 +84,23 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         backgroundColor: Colors.black,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white54,
-        currentIndex: 1, // O el índice actual correspondiente
+        currentIndex: 1,
         onTap: (index) {
           switch (index) {
             case 0:
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const HomeScreen(title: 'FitBeats',),
-                ),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen(title: 'FitBeats')));
               break;
             case 1:
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FavoriteListScreen(),
-                ),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const FavoriteListScreen()));
               break;
-
-              // Implementar navegación a perfil
-              
           }
         },
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Inicio',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_border),
-            label: 'Favoritos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Perfil',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: 'Favoritos'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Perfil'),
         ],
       ),
-
     );
   }
 }

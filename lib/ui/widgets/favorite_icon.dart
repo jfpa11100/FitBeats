@@ -16,6 +16,5 @@ class FavoriteIcon extends StatelessWidget {
       ),
       onPressed: onPressed,
     );
-
   }
 }
