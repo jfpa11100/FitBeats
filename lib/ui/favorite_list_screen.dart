@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/models/playlist.dart';
 import 'package:myapp/providers/favorite_playlist_provider.dart';
-import 'package:myapp/ui/home_screen.dart';
+import 'package:myapp/ui/auth/home/home_screen.dart';
 import 'package:myapp/ui/playlist_screen.dart';
 import 'package:myapp/ui/profile_screen.dart';
 import 'package:myapp/ui/widgets/favorite_icon.dart';
@@ -47,7 +47,7 @@ class FavoriteListScreen extends ConsumerWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.asset(
-                    playlist.image,
+                    'assets/images/runner.png',
                     width: 60,
                     height: 60,
                     fit: BoxFit.cover,
@@ -79,7 +79,7 @@ class FavoriteListScreen extends ConsumerWidget {
                           FavoriteIcon(
                             isFavorite: playlist.isFavorite,
                             onPressed: () {
-                              controller.toggleFavorite(index);
+                              controller.toggleFavoritePlaylist(playlist);
                               final message = playlist.isFavorite
                                   ? 'Añadido a favoritos'
                                   : 'Eliminado de favoritos';
