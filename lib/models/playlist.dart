@@ -40,7 +40,7 @@ class Playlist {
     title: json["name"],
     image: json["image"],
     addedAt: json["addedAt"],
-    isFavorite: json["addedAt"] ?? false,
+    isFavorite: json["isFavorite"] ?? false,
   );
 
   Map<String, dynamic> toJson() => {
