@@ -1,45 +1,47 @@
-// /lib/controller/favorite_playlist_controller.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/models/playlist.dart';
 
 class FavoritePlaylistController extends StateNotifier<List<Playlist>> {
-  FavoritePlaylistController()
-      : super([
-          Playlist(
-            title: 'Power Boost para Correr Bajo la Lluvia',
-            addedAt: '2025-05-04',
-            image: 'assets/images/runner.png',
-          ),
-          Playlist(
-            title: 'Energía Total de Lunes',
-            addedAt: '2025-05-02',
-            image: 'assets/images/walk.png',
-          ),
-          Playlist(
-            title: 'Solo Hits para Hacer Yoga',
-            addedAt: '2025-04-01',
-            image: 'assets/images/yoga.png',
-          ),
-          Playlist(
-            title: 'Crossover para Hacer Hiit',
-            addedAt: '2025-04-28',
-            image: 'assets/images/hiit.png',
-          ),
-          Playlist(
-            title: 'Rock Pesado para Correr',
-            addedAt: '2025-03-09',
-            image: 'assets/images/runner.png',
-          ),
-          Playlist(
-            title: 'Pruebita',
-            addedAt: '2025-03-09',
-            image: 'assets/images/runner.png',
-          ),
-        ]);
+  FavoritePlaylistController() : super([
+    Playlist(
+      id: '1',
+      title: 'Power Boost para Correr Bajo la Lluvia',
+      addedAt: '2025-05-04',
+      image: 'assets/images/runner.png',
+    ),
+    Playlist(
+      id: '2',
+      title: 'Prueba',
+      addedAt: '2025-03-09',
+      image: 'assets/images/runner.png',
+    ),
+  ]);
 
-  void toggleFavorite(int index) {
-    final updated = [...state];
-    updated[index].isFavorite = !updated[index].isFavorite;
-    state = updated;
+  // Add favorite playlist
+  void addToPlaylistFavoriteList(Playlist playlist) {
+    if (!state.any((favoritePlaylist) => favoritePlaylist.id == playlist.id)) {
+      state = [...state, playlist.copyWith(isFavorite: true)];
+    }
   }
+
+  // Delete from favorites
+  void removeFromFavoritePlaylistList(Playlist playlist) {
+    state = state
+        .where((favoritePlaylist) => favoritePlaylist.id != playlist.id)
+        .toList();
+  }
+
+  // Toggle favorite playlist state 
+  void toggleFavoritePlaylist(Playlist playlist) {
+    if (isFavorite(playlist.id)) {
+      removeFromFavoritePlaylistList(playlist);
+    } else {
+      addToPlaylistFavoriteList(playlist);
+    }
+  }
+
+  bool isFavorite(String playlistId) {
+    return state.any((favoriteRecipe) => favoriteRecipe.id == playlistId);
+  }
+
 }

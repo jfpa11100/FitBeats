@@ -4,7 +4,7 @@ import 'package:myapp/ui/profile_screen.dart';
 import '../../providers/playlist_provider.dart';
 import 'widgets/favorite_icon.dart';
 import 'widgets/song_title.dart';
-import 'home_screen.dart';
+import 'auth/home/home_screen.dart';
 import 'favorite_list_screen.dart';
 
 class PlaylistScreen extends ConsumerWidget {
