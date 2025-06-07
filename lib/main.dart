@@ -120,7 +120,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: SafeArea(child: const LoginScreen(title: 'FitBeats')),
+      home: SafeArea(child: const LoginScreen()),
     );
   }
 }
