@@ -6,6 +6,7 @@ import 'package:myapp/models/weather_response.dart';
 class WeatherController extends FamilyAsyncNotifier<WeatherResponse, String> {
   @override
   Future<WeatherResponse> build(String location) async {
+    ref.keepAlive();
     return await WeatherApi().getWeather(location);
   }
 }
