@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:myapp/ui/profile_screen.dart';
 import '../../providers/playlist_provider.dart';
 import 'widgets/favorite_icon.dart';
 import 'widgets/song_title.dart';
@@ -92,6 +93,9 @@ class PlaylistScreen extends ConsumerWidget {
               break;
             case 1:
               Navigator.push(context, MaterialPageRoute(builder: (_) => const FavoriteListScreen()));
+              break;
+            case 2:
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileScreen()));
               break;
           }
         },

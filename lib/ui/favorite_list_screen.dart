@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:myapp/models/playlist.dart';
+import 'package:myapp/providers/favorite_playlist_provider.dart';
 import 'package:myapp/ui/home_screen.dart';
 import 'package:myapp/ui/playlist_screen.dart';
+import 'package:myapp/ui/profile_screen.dart';
 import 'package:myapp/ui/widgets/favorite_icon.dart';
-import 'package:myapp/providers/favorite_playlist_provider.dart';
 
 class FavoriteListScreen extends ConsumerWidget {
   const FavoriteListScreen({super.key});
@@ -20,14 +22,18 @@ class FavoriteListScreen extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         title: Text(
           'Favoritos',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge
+              ?.copyWith(color: Colors.white),
         ),
       ),
       body: ListView.builder(
         itemCount: favoritePlaylists.length,
         padding: const EdgeInsets.all(16.0),
         itemBuilder: (context, index) {
-          final playlist = favoritePlaylists[index];
+          final Playlist playlist = favoritePlaylists[index];
+
           return Container(
             margin: const EdgeInsets.only(bottom: 16),
             padding: const EdgeInsets.all(16),
@@ -36,6 +42,7 @@ class FavoriteListScreen extends ConsumerWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
@@ -53,7 +60,10 @@ class FavoriteListScreen extends ConsumerWidget {
                     children: [
                       Text(
                         playlist.title,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: Colors.white),
                       ),
                       const SizedBox(height: 8),
                       Row(
@@ -61,26 +71,35 @@ class FavoriteListScreen extends ConsumerWidget {
                         children: [
                           Text(
                             'Añadido el ${playlist.addedAt}',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white70),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: Colors.white70),
                           ),
                           FavoriteIcon(
                             isFavorite: playlist.isFavorite,
                             onPressed: () {
                               controller.toggleFavorite(index);
+                              final message = playlist.isFavorite
+                                  ? 'Añadido a favoritos'
+                                  : 'Eliminado de favoritos';
                               final snackBar = SnackBar(
                                 backgroundColor: purple,
                                 behavior: SnackBarBehavior.floating,
                                 duration: const Duration(seconds: 1),
                                 content: Text(
-                                  playlist.isFavorite ? 'Añadido a favoritos' : 'Eliminado de favoritos',
+                                  message,
                                   style: TextStyle(
-                                    color: playlist.isFavorite ? Colors.black : Colors.white,
+                                    color: playlist.isFavorite
+                                        ? Colors.black
+                                        : Colors.white,
                                     fontWeight: FontWeight.w500,
                                     fontFamily: 'calSans',
                                   ),
                                 ),
                               );
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
                             },
                           ),
                         ],
@@ -100,11 +119,24 @@ class FavoriteListScreen extends ConsumerWidget {
         currentIndex: 1,
         onTap: (index) {
           if (index == 0) {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen(title: 'FitBeats')));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const HomeScreen(title: 'FitBeats')),
+            );
           } else if (index == 1) {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const PlaylistScreen()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const PlaylistScreen()),
+            );
+          } else if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ProfileScreen()),
+            );
           }
-          // Navegación a perfil
         },
         items: const [
           BottomNavigationBarItem(
