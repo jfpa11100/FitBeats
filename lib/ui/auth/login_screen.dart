@@ -12,11 +12,12 @@ class LoginScreen extends ConsumerStatefulWidget {
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
+
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>(); // Para manejar el estado del formulario
+  final _formKey = GlobalKey<FormState>(); // Acceso estado del formulario
   bool _isLogin = true;
 
   @override
@@ -31,7 +32,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
       } else if (next is LoginStateError) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.errorMessage)),
+          SnackBar(content: Text(next.errorMessage), 
+          backgroundColor: Color(0xFF9B5DE5)),
         );
       }
     });
@@ -50,14 +52,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 TextFormField(
                   controller: _emailController,
                   decoration: const InputDecoration(labelText: 'Email'),
-                  validator: ref.read(emailValidatorProvider),
+                  validator: _isLogin ? null : ref.read(emailValidatorProvider),  
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _passwordController,
                   decoration: const InputDecoration(labelText: 'Contraseña'),
                   obscureText: true,
-                  validator: ref.read(passwordValidatorProvider),
+                  validator: _isLogin ? null : ref.read(passwordValidatorProvider),  
                 ),
                 if (!_isLogin)
                   Padding(
@@ -103,46 +105,53 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _handleSubmit() {
-    // Validación antes de enviar
-    if (_formKey.currentState?.validate() ?? false) {
-      final email = _emailController.text.trim();
-      final password = _passwordController.text.trim();
-      final confirmPassword = _confirmPasswordController.text.trim();
+  // Validación antes de enviar
+  if (_formKey.currentState?.validate() ?? false) {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
 
-      final controller = ref.read(authControllerProvider.notifier);
+    final controller = ref.read(authControllerProvider.notifier);
 
-      if (_isLogin) {
-        controller.login(email, password);
-      } else {
-        controller.signUp(email, password, confirmPassword);
-      }
+    if (_isLogin) {
+      controller.login(email, password);
     } else {
-      String errors = '';
-      
-      final emailError = ref.read(emailValidatorProvider)(_emailController.text);
-      if (emailError != null) {
-        errors += '$emailError\n';
-      }
+      controller.signUp(email, password, confirmPassword);
+    }
+  } else {
+    String errors = '';
+    
+    final emailError = ref.read(emailValidatorProvider)(_emailController.text);
+    if (emailError != null) {
+      errors += '• $emailError\n';
+    }
 
-      final passwordError = ref.read(passwordValidatorProvider)(_passwordController.text);
-      if (passwordError != null) {
-        errors += '$passwordError\n';
-      }
+    final passwordError = ref.read(passwordValidatorProvider)(_passwordController.text);
+    if (passwordError != null) {
+      errors += '• $passwordError\n';
+    }
 
-      if (!_isLogin) {
-        final confirmPasswordError = _confirmPasswordController.text != _passwordController.text
-            ? 'Las contraseñas no coinciden'
-            : null;
-        if (confirmPasswordError != null) {
-          errors += '$confirmPasswordError\n';
-        }
-      }
-
-      if (errors.isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errors.trim())),
-        );
+    if (!_isLogin) {
+      final confirmPasswordError = _confirmPasswordController.text != _passwordController.text
+          ? '• Las contraseñas no coinciden'
+          : null;
+      if (confirmPasswordError != null) {
+        errors += '$confirmPasswordError\n';
       }
     }
+
+    if (errors.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            errors.trim(),
+            style: const TextStyle(fontSize: 16),
+          ),
+          backgroundColor: Color(0xFF9B5DE5),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
   }
 }
