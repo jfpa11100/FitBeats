@@ -1,54 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../models/user_model.dart';
 
-final profileControllerProvider =
-    StateNotifierProvider<ProfileController, ProfileState>(
-  (ref) => ProfileController(),
-);
+class ProfileController extends StateNotifier<UserModel?> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-class ProfileState {
-  final String email;
+  ProfileController() : super(null) {
+    loadProfile();
+  }
 
-  ProfileState({required this.email});
+  // Cargando datos usuario actual
+  Future<void> loadProfile() async {
+    final currentUser = _auth.currentUser;
 
-  ProfileState copyWith({String? email}) {
-    return ProfileState(
-      email: email ?? this.email,
-    );
+    if (currentUser != null) {
+      state = UserModel(id: currentUser.uid, email: currentUser.email);
+    }
+  }
+
+  Future<void> logout(BuildContext context) async {
+    await _auth.signOut();
+    state = null; // 
   }
 }
 
-class ProfileController extends StateNotifier<ProfileState> {
-  ProfileController()
-      : super(ProfileState(email: 'usuario@fitbeats.com')); // ejemplito
 
-  void logout(BuildContext context) {
-    // lógica  logout con firebase
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: const Color(0xFF9B5DE5),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 1),
-        content: Row(
-          children: [
-            const Icon(
-              Icons.logout,
-              color: Colors.black,
-            ),
-            const SizedBox(width: 12),
-            const Expanded(
-              child: Text(
-                'Sesión cerrada',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: 'calSans',
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+final profileControllerProvider = StateNotifierProvider<ProfileController, UserModel?>((ref) {
+  return ProfileController();
+});

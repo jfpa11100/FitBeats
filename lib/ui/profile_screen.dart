@@ -8,7 +8,13 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userEmail = ref.watch(profileControllerProvider).email;
+
+    // Acceso  perfil 
+    final user = ref.watch(profileControllerProvider);
+
+    if (user == null) {
+      return const LoginScreen();
+    }
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -26,22 +32,24 @@ class ProfileScreen extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
-            mainAxisSize: MainAxisSize.min, 
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset('assets/images/logo.png', height: 200.0),
               const SizedBox(height: 32),
+
               Text(
-                userEmail,
+                user.email ?? 'No hay correo disponible',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: Colors.white,
                     ),
               ),
               const SizedBox(height: 40),
+
               ElevatedButton(
                 onPressed: () {
                   ref.read(profileControllerProvider.notifier).logout(context); 
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen(title: 'Iniciar Sesión')));
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
                 },
                 child: const Text('Cerrar sesión'),
               ),

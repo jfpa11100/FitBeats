@@ -1,201 +1,148 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/services/auth/auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:myapp/providers/login_provider.dart';
+import 'package:myapp/states/login_state.dart';
 import 'package:myapp/ui/home_screen.dart';
+import 'package:myapp/providers/validator.dart'; 
 
-class LoginScreen extends StatefulWidget {
-  final String title;
-  const LoginScreen({super.key, required this.title});
+class LoginScreen extends ConsumerStatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _rePasswordController = TextEditingController();
-  bool _isLogIn = true;
-  bool _isLoading = false;
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>(); // Para manejar el estado del formulario
+  bool _isLogin = true;
 
   @override
   Widget build(BuildContext context) {
+    final loginState = ref.watch(authControllerProvider);
+
+    ref.listen<LoginState>(authControllerProvider, (prev, next) {
+      if (next is LoginStateSuccess) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeScreen(title: 'FitBeats')),
+        );
+      } else if (next is LoginStateError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(next.errorMessage)),
+        );
+      }
+    });
+
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  Image.asset('assets/images/logo.png', height: 200.0),
-                  Text(
-                    widget.title,
-                    style: Theme.of(context).textTheme.displayLarge,
-                  ),
-                ],
-              ),
-              SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: _emailController,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      decoration: InputDecoration(labelText: 'Email'),
-                    ),
-                    SizedBox(height: 15),
-                    TextFormField(
-                      controller: _passwordController,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      decoration: InputDecoration(labelText: 'Contraseña'),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Form(
+            key: _formKey, 
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                Image.asset('assets/images/logo.png', height: 200.0),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                  validator: ref.read(emailValidatorProvider),
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(labelText: 'Contraseña'),
+                  obscureText: true,
+                  validator: ref.read(passwordValidatorProvider),
+                ),
+                if (!_isLogin)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: TextFormField(
+                      controller: _confirmPasswordController,
+                      decoration: const InputDecoration(labelText: 'Confirmar contraseña'),
                       obscureText: true,
+                      validator: (value) {
+                        if (value != _passwordController.text) {
+                          return 'Las contraseñas no coinciden';
+                        }
+                        return null;
+                      },
                     ),
-                    SizedBox(height: 15),
-                    if (!_isLogIn)
-                      TextFormField(
-                        controller: _rePasswordController,
-                        style: Theme.of(context).textTheme.bodySmall,
-                        decoration: InputDecoration(
-                          labelText: 'Confirma la contraseña',
-                        ),
-                        obscureText: true,
-                      ),
-                    SizedBox(height: 15),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: ElevatedButton(
-                  onPressed:
-                      _isLoading
-                          ? null
-                          : () {
-                            if (_isLogIn) {
-                              _handleLogIn();
-                            } else {
-                              _handleSignUp();
-                            }
-                          },
-                  child:
-                      _isLoading
-                          ? const CircularProgressIndicator(
-                            padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 5.0),
-                          )
-                          : Text(
-                            _isLogIn ? 'Iniciar Sesión' : 'Registrarse',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _isLogIn = !_isLogIn;
-                  });
-                },
-                child: Text(
-                  _isLogIn
-                      ? '¿Aún no tienes una cuenta?'
-                      : '¿Ya tienes una cuenta?',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSecondary,
                   ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: loginState is LoginStateLoading
+                      ? null
+                      : _handleSubmit,
+                  child: loginState is LoginStateLoading
+                      ? const CircularProgressIndicator()
+                      : Text(_isLogin ? 'Iniciar Sesión' : 'Registrarse'),
                 ),
-              ),
-            ],
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _isLogin = !_isLogin;
+                    });
+                    ref.read(authControllerProvider.notifier).reset();
+                  },
+                  child: Text(_isLogin
+                      ? '¿No tienes cuenta? Regístrate'
+                      : '¿Ya tienes cuenta? Inicia sesión'),
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Future<void> _handleLogIn() async {
-    setState(() {
-      _isLoading = true;
-    });
-    try {
-      await logIn();
-      if (mounted) {
-        Navigator.pushReplacement(
-          // Usar pushReplacement para evitar volver a la pantalla de login
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomeScreen(title: 'FitBeats'),
-          ),
+  void _handleSubmit() {
+    // Validación antes de enviar
+    if (_formKey.currentState?.validate() ?? false) {
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+      final confirmPassword = _confirmPasswordController.text.trim();
+
+      final controller = ref.read(authControllerProvider.notifier);
+
+      if (_isLogin) {
+        controller.login(email, password);
+      } else {
+        controller.signUp(email, password, confirmPassword);
+      }
+    } else {
+      String errors = '';
+      
+      final emailError = ref.read(emailValidatorProvider)(_emailController.text);
+      if (emailError != null) {
+        errors += '$emailError\n';
+      }
+
+      final passwordError = ref.read(passwordValidatorProvider)(_passwordController.text);
+      if (passwordError != null) {
+        errors += '$passwordError\n';
+      }
+
+      if (!_isLogin) {
+        final confirmPasswordError = _confirmPasswordController.text != _passwordController.text
+            ? 'Las contraseñas no coinciden'
+            : null;
+        if (confirmPasswordError != null) {
+          errors += '$confirmPasswordError\n';
+        }
+      }
+
+      if (errors.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errors.trim())),
         );
       }
-    } catch (error) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(error.toString())));
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _handleSignUp() async {
-    setState(() {
-      _isLoading = true;
-    });
-    try {
-      await signUp();
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomeScreen(title: 'FitBeats'),
-          ),
-        );
-      }
-    } catch (error) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(error.toString())));
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  Future<void> logIn() async {
-    try {
-      await Auth().signInWithEmailAndPassword(
-        _emailController.text,
-        _passwordController.text,
-      );
-    } catch (error) {
-      rethrow;
-    }
-  }
-
-  Future<void> signUp() async {
-    String password = _passwordController.text;
-    String rePassword = _rePasswordController.text;
-
-    if (password != rePassword) {
-      throw 'Las contraseñas no coinciden';
-    }
-    try {
-      await Auth().signUpWithEmailAndPassword(
-        _emailController.text,
-        _passwordController.text,
-      );
-    } catch (error) {
-      rethrow;
     }
   }
 }
