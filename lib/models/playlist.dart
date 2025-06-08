@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:myapp/models/song.dart';
+
 Playlist playlistFromJson(String str) => Playlist.fromJson(json.decode(str));
 
 String playlistToJson(Playlist data) => json.encode(data.toJson());
@@ -10,6 +12,7 @@ class Playlist {
   String? image;
   String? addedAt;
   bool isFavorite;
+  List<Song> songs; 
 
   Playlist({
     required this.id,
@@ -17,6 +20,7 @@ class Playlist {
     this.image,
     this.addedAt,
     this.isFavorite = false,
+    this.songs = const [],
   });
 
   Playlist copyWith({
@@ -25,6 +29,7 @@ class Playlist {
     String? image,
     String? addedAt,
     bool? isFavorite,
+    List<Song> songs = const []
   }) {
     return Playlist(
       id: id ?? this.id,
@@ -32,6 +37,7 @@ class Playlist {
       image: image ?? this.image,
       addedAt: addedAt ?? this.addedAt,
       isFavorite: isFavorite ?? this.isFavorite,
+      songs: songs
     );
   }
 

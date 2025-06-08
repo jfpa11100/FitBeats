@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/song_model.dart';
-import '../../../providers/playlist_provider.dart';
+import '../../providers/reproductor_provider.dart';
 
 class SongTitle extends ConsumerWidget {
   final SongModel song;
@@ -10,7 +10,7 @@ class SongTitle extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.read(playlistProvider);
+    final controller = ref.read(reproductorProvider);
 
     return InkWell(
       onTap: () {
