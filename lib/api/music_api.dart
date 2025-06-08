@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:myapp/models/song.dart';
@@ -31,14 +30,16 @@ class MusicApi {
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList =
-          jsonDecode(response.body)['playlists']['items'];
-      return jsonList.map((json) => Playlist.fromJson(json)).toList();
+          jsonDecode(response.body)["playlists"]["items"];
+      return jsonList
+          .where((json) => json != null)
+          .map((json) => Playlist.fromJson(json))
+          .toList();
     } else if (response.statusCode == 401) {
       await _getToken();
       return searchPlaylists(query);
     } else {
-      debugPrint('Search failed: ${response.body}');
-      throw Exception('Error buscando playlists');
+      throw Exception('Hubo un error buscando tu\nplaylist intenta de nuevo');
     }
   }
 
@@ -52,12 +53,14 @@ class MusicApi {
 
     if (response.statusCode == 200) {
       final List<dynamic> items = jsonDecode(response.body)["items"];
-      return items.map((item) => Song.fromJson(item)).toList();
+      return items
+          .where((json) => json != null && json["track"] != null)
+          .map((item) => Song.fromJson(item["track"]))
+          .toList();
     } else if (response.statusCode == 401) {
       await _getToken();
       return getPlaylistSongs(playlistId);
     } else {
-      debugPrint('Error canciones: ${response.body}');
       throw Exception('Error obteniendo canciones');
     }
   }

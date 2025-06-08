@@ -20,12 +20,7 @@ class ProfileController extends StateNotifier<UserModel?> {
   }
 
   Future<void> logout(BuildContext context) async {
+    state = null;
     await _auth.signOut();
-    state = null; // 
   }
 }
-
-
-final profileControllerProvider = StateNotifierProvider<ProfileController, UserModel?>((ref) {
-  return ProfileController();
-});

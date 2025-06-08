@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:myapp/controllers/location_controller.dart';
-import 'package:myapp/ui/auth/home/widgets/activity_button.dart';
-import 'package:myapp/ui/playlist_screen.dart';
-import 'package:myapp/ui/widgets/weather_widget.dart';
+import 'package:myapp/ui/home/widgets/activity_button.dart';
+import 'package:myapp/ui/playlists/playlist_screen.dart';
+import 'package:myapp/ui/home/widgets/weather_widget.dart';
 
 class ActivityWidget extends StatefulWidget {
   const ActivityWidget({super.key});

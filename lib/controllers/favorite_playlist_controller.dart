@@ -27,30 +27,27 @@ class FavoritePlaylistController extends StateNotifier<List<Playlist>> {
   // Agregar una playlist a los favoritos
   void addToPlaylistFavoriteList(Playlist playlist) {
     if (!state.any((favoritePlaylist) => favoritePlaylist.id == playlist.id)) {
-      state = [...state, playlist.copyWith(isFavorite: true)];
-      _saveFavorites(); 
+      state = [...state, playlist.copyWith(isFavorite: true, addedAt: DateTime.now().toString())];
+      _saveFavorites();
     }
   }
 
   // Eliminar una playlist de los favoritos
   void removeFromFavoritePlaylistList(Playlist playlist) {
-    state = state
-        .where((favoritePlaylist) => favoritePlaylist.id != playlist.id)
-        .toList();
+    state =
+        state
+            .where((favoritePlaylist) => favoritePlaylist.id != playlist.id)
+            .toList();
     _saveFavorites();
   }
 
-  
   void toggleFavoritePlaylist(Playlist playlist) {
-    if (isFavorite(playlist.id)) {
+    if (isFavorite(playlist)) {
       removeFromFavoritePlaylistList(playlist);
     } else {
       addToPlaylistFavoriteList(playlist);
     }
   }
 
- 
-  bool isFavorite(String playlistId) {
-    return state.any((favoritePlaylist) => favoritePlaylist.id == playlistId);
-  }
+  bool isFavorite(Playlist playlist) => state.any((p) => p.id == playlist.id);
 }

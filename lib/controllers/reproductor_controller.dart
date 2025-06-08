@@ -1,32 +1,30 @@
-import 'package:flutter/material.dart';
-import '../models/song_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:myapp/models/song.dart';
+import 'package:myapp/controllers/states/reproductor_state.dart';
 
-class ReproductorController extends ChangeNotifier {
+class ReproductorController extends StateNotifier<ReproductorState> {
 
-  bool isFavorite = false;
-  List<SongModel> _songs = [
-    SongModel(title: "Overdrive", artist: "Beyond feat", duration: "3:45"),
-    SongModel(title: "Ignite", artist: "The Reworkers", duration: "2:40"),
-    SongModel(title: "Strong Now", artist: "Fortifiers", duration: "3:37"),
-    SongModel(title: "Keep Moving On", artist: "Pushers", duration: "3:25"),
-    SongModel(title: "prueba", artist: "Pushers", duration: "3:25"),
-  ];
+  ReproductorController() : super(ReproductorState());
 
-  List<SongModel> get songs => _songs;
-
-  toggleFavorite() {
-    isFavorite = !isFavorite;
-    notifyListeners();
+  togglePlay(Song song) {
+    if (state.currentSong?.id == song.id) {
+      // change play/pause if is the same song
+      state = state.copyWith(isPlaying: !state.isPlaying);
+    } else {
+      // if is another song change current and play it
+      state = ReproductorState(currentSong: song, isPlaying: true);
+    }
   }
 
-  togglePlay(SongModel song) {
-    _songs = _songs.map((s) {
-      if (s == song) {
-        return s.copyWith(isPlaying: !s.isPlaying);
-      } else {
-        return s.copyWith(isPlaying: false);
-      }
-    }).toList();
-    notifyListeners();
+  pause() {
+    if (state.isPlaying) {
+      state = state.copyWith(isPlaying: false);
+    }
+  }
+
+  play() {
+    if (!state.isPlaying && state.currentSong != null) {
+      state = state.copyWith(isPlaying: true);
+    }
   }
 }
