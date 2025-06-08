@@ -16,3 +16,9 @@ then
     npm install
 ```
 
+and add the .env file to the root of the project.
+
+##Develop by:
+
+- Mariana Pineda Isaza
+- Juan Felipe Palacio Agudelo
