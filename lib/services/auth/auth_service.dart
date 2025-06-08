@@ -35,7 +35,7 @@ class AuthService {
   Future<void> logout() async {
     await _auth.signOut();
   }
-  
+
   // Usuario autenticado
   Future<UserModel?> getCurrentUser() async {
     final user = _auth.currentUser;

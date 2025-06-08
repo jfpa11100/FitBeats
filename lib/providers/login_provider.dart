@@ -9,5 +9,5 @@ final authServiceProvider = Provider<AuthService>((ref) {
 
 final authControllerProvider = StateNotifierProvider<AuthController, LoginState>((ref) {
   final authService = ref.read(authServiceProvider);
-  return AuthController(authService, ref); 
+  return AuthController(authService); 
 });
