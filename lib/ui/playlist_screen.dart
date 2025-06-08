@@ -1,29 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:myapp/models/playlist.dart';
-import 'package:myapp/providers/favorite_playlist_provider.dart';
 import 'package:myapp/providers/playlist_provider.dart';
 import 'package:myapp/ui/profile_screen.dart';
-import 'package:myapp/ui/widgets/favorite_icon.dart';
-import 'package:myapp/ui/widgets/song_title.dart';
+import '../providers/reproductor_provider.dart';
+import 'widgets/favorite_icon.dart';
+import 'widgets/song_title.dart';
+import 'package:myapp/models/playlist.dart';
+import 'package:myapp/providers/favorite_playlist_provider.dart';
 import 'auth/home/home_screen.dart';
 import 'favorite_list_screen.dart';
 
 class PlaylistScreen extends ConsumerWidget {
-  const PlaylistScreen({super.key});
+  final Map<String, String?> searchQuery;
+  const PlaylistScreen({super.key, required this.searchQuery});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final playlistController = ref.watch(playlistProvider);
-    final favoriteController = ref.read(favoritePlaylistProvider.notifier);
-
-    final playlist = Playlist(
-      id: '1', 
-      title: 'Power Boost para Correr Bajo la Lluvia',
-      image: 'assets/images/runner.png',
-      addedAt: '2025-05-04',
-      isFavorite: ref.watch(favoritePlaylistProvider.select((state) => state.contains('1'))),
+    final playlistState = ref.watch(
+      playlistProvider(searchQuery.values.join(" ")),
     );
+    final reproductorController = ref.watch(reproductorProvider);
+    final favoriteController = ref.read(favoritePlaylistProvider.notifier);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -34,30 +31,40 @@ class PlaylistScreen extends ConsumerWidget {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Column(
-        children: [
-          Text(
-            playlist.title, 
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
-          ),
-          const SizedBox(height: 16),
-          Center(
-            child: Stack(
-              alignment: Alignment.bottomRight,
+      body: playlistState.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) {
+          return Center(
+            child: Text(error.toString()),
+          );
+        },
+        data:
+            (playlist) => Column(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Image.asset(
-                    playlist.image ?? 'assets/images/default.png', 
-                    height: 310,
-                    width: 380,
-                    fit: BoxFit.cover,
-                  ),
+                Text(
+                  playlist.title,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium?.copyWith(color: Colors.white),
                 ),
-                FavoriteIcon(
-                  isFavorite: playlist.isFavorite,
-                  onPressed: () {
-                    favoriteController.toggleFavoritePlaylist(playlist);
+                const SizedBox(height: 16),
+                Center(
+                  child: Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.asset(
+                          'assets/images/runner.png',
+                          height: 310,
+                          width: 380,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      FavoriteIcon(
+                        isFavorite: reproductorController.isFavorite,
+                        onPressed: () {
+                          favoriteController.toggleFavoritePlaylist(playlist);
                     
                     final isFav = ref.read(favoritePlaylistProvider.notifier).isFavorite(playlist.id);
                     final message = isFav ? 'Añadido a favoritos' : 'Eliminado de favoritos';
@@ -76,22 +83,23 @@ class PlaylistScreen extends ConsumerWidget {
                     );
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   },
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    itemCount: reproductorController.songs.length,
+                    itemBuilder: (context, index) {
+                      final song = reproductorController.songs[index];
+                      return SongTitle(song: song);
+                    },
+                  ),
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 24),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              itemCount: playlistController.songs.length,
-              itemBuilder: (context, index) {
-                final song = playlistController.songs[index];
-                return SongTitle(song: song);
-              },
-            ),
-          ),
-        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
@@ -101,20 +109,37 @@ class PlaylistScreen extends ConsumerWidget {
         onTap: (index) {
           switch (index) {
             case 0:
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen(title: 'FitBeats')));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const HomeScreen(title: 'FitBeats'),
+                ),
+              );
               break;
             case 1:
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const FavoriteListScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const FavoriteListScreen()),
+              );
               break;
             case 2:
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfileScreen()),
+              );
               break;
           }
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: 'Favoritos'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Perfil'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite_border),
+            label: 'Favoritos',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            label: 'Perfil',
+          ),
         ],
       ),
     );

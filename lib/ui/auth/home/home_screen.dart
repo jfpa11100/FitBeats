@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:myapp/controllers/location_controller.dart';
 import 'package:myapp/ui/auth/home/widgets/activity_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,21 +9,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool authLocation = false;
-  late Position location;
-
-  @override
-  void initState() {
-    super.initState();
-    LocationController().getLocation().then(
-      (pos) => {
-        setState(() {
-          location = pos;
-          authLocation = true;
-        }),
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         leading: Image.asset('assets/images/logo.png'),
       ),
-      body: ActivityWidget(authLocation: authLocation, location: location),
+      body: ActivityWidget(),
     );
   }
 }

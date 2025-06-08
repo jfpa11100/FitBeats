@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/models/playlist.dart';
 import 'package:myapp/providers/favorite_playlist_provider.dart';
 import 'package:myapp/ui/auth/home/home_screen.dart';
-import 'package:myapp/ui/playlist_screen.dart';
 import 'package:myapp/ui/profile_screen.dart';
 import 'package:myapp/ui/widgets/favorite_icon.dart';
 
@@ -26,10 +25,9 @@ class FavoriteListScreen extends ConsumerWidget {
         ),
         title: Text(
           'Favoritos',
-          style: Theme.of(context)
-              .textTheme
-              .titleLarge
-              ?.copyWith(color: Colors.white),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(color: Colors.white),
         ),
       ),
       body: ListView.builder(
@@ -64,10 +62,9 @@ class FavoriteListScreen extends ConsumerWidget {
                     children: [
                       Text(
                         playlist.title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: Colors.white),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(color: Colors.white),
                       ),
                       const SizedBox(height: 8),
                       Row(
@@ -75,16 +72,13 @@ class FavoriteListScreen extends ConsumerWidget {
                         children: [
                           Text(
                             'Añadido el ${playlist.addedAt}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
+                            style: Theme.of(context).textTheme.bodySmall
                                 ?.copyWith(color: Colors.white70),
                           ),
                           FavoriteIcon(
                             isFavorite: playlist.isFavorite,
                             onPressed: () {
                               controller.toggleFavoritePlaylist(playlist);
-
                               final updatedIsFavorite = ref
                                   .read(favoritePlaylistProvider)
                                   .any((favPlaylist) => favPlaylist.id == playlist.id);
@@ -92,7 +86,7 @@ class FavoriteListScreen extends ConsumerWidget {
                               final message = updatedIsFavorite
                                   ? 'Añadido a favoritos'
                                   : 'Eliminado de favoritos';
-
+                              
                               final snackBar = SnackBar(
                                 backgroundColor: purple,
                                 behavior: SnackBarBehavior.floating,

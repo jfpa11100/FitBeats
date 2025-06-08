@@ -1,31 +1,36 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import '../models/song_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:myapp/api/music_api.dart';
+import 'package:myapp/models/playlist.dart';
 
-class PlaylistController extends ChangeNotifier {
-  bool isFavorite = false;
-  List<SongModel> _songs = [
-    SongModel(title: "Overdrive", artist: "FTBC Beyondfeat", duration: "3:45"),
-    SongModel(title: "Ignite", artist: "The Reworkers", duration: "2:40"),
-    SongModel(title: "Strong Now", artist: "Fortifiers", duration: "3:37"),
-    SongModel(title: "Keep Moving On", artist: "Pushers", duration: "3:25"),
-    SongModel(title: "Kpruebita", artist: "Pushers", duration: "3:25"),
-  ];
+class PlaylistController extends FamilyAsyncNotifier<Playlist, String> {
+  static const int _maxRetries = 3;
 
-  List<SongModel> get songs => _songs;
-
-  void toggleFavorite() {
-    isFavorite = !isFavorite;
-    notifyListeners();
+  @override
+  FutureOr<Playlist> build(String query) async {
+    return _searchWithFallback(query, retries: _maxRetries);
   }
 
-  void togglePlay(SongModel song) {
-    _songs = _songs.map((s) {
-      if (s == song) {
-        return s.copyWith(isPlaying: !s.isPlaying);
-      } else {
-        return s.copyWith(isPlaying: false);
+  Future<Playlist> _searchWithFallback(String query, {required int retries}) async {
+    if (retries == 0) {
+      throw Exception('No se encontraron playlists\nintenta con opciones diferentes.');
+    }
+
+    final List<Playlist> playlists = await MusicApi().searchPlaylists(query);
+
+    if (playlists.isNotEmpty) {
+      for (final playlist in playlists) {
+        final songs = await MusicApi().getPlaylistSongs(playlist.id);
+        if (songs.isNotEmpty) {
+          debugPrint("Songs found $songs for playlist: ${playlist.title}");
+          return playlist.copyWith(songs: songs);
+        }
       }
-    }).toList();
-    notifyListeners();
+    }
+
+    // Try with the first word removed from the query
+    final updatedQuery = query.split(' ').skip(1).join(' ');
+    return _searchWithFallback(updatedQuery, retries: retries - 1);
   }
 }
