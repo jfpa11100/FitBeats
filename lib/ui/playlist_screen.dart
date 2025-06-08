@@ -5,6 +5,8 @@ import 'package:myapp/ui/profile_screen.dart';
 import '../providers/reproductor_provider.dart';
 import 'widgets/favorite_icon.dart';
 import 'widgets/song_title.dart';
+import 'package:myapp/models/playlist.dart';
+import 'package:myapp/providers/favorite_playlist_provider.dart';
 import 'auth/home/home_screen.dart';
 import 'favorite_list_screen.dart';
 
@@ -18,6 +20,7 @@ class PlaylistScreen extends ConsumerWidget {
       playlistProvider(searchQuery.values.join(" ")),
     );
     final reproductorController = ref.watch(reproductorProvider);
+    final favoriteController = ref.read(favoritePlaylistProvider.notifier);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -61,36 +64,25 @@ class PlaylistScreen extends ConsumerWidget {
                       FavoriteIcon(
                         isFavorite: reproductorController.isFavorite,
                         onPressed: () {
-                          reproductorController.toggleFavorite();
-                          final isFav =
-                              ref
-                                  .read(
-                                    reproductorController as ProviderListenable,
-                                  )
-                                  .isFavorite;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: const Color.fromARGB(
-                                255,
-                                17,
-                                12,
-                                24,
-                              ),
-                              content: Text(
-                                isFav
-                                    ? 'Añadido a favoritos'
-                                    : 'Eliminado de favoritos',
-                                style: TextStyle(
-                                  color: isFav ? Colors.black : Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: 'calSans',
-                                ),
-                              ),
-                              duration: const Duration(seconds: 1),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
-                        },
+                          favoriteController.toggleFavoritePlaylist(playlist);
+                    
+                    final isFav = ref.read(favoritePlaylistProvider.notifier).isFavorite(playlist.id);
+                    final message = isFav ? 'Añadido a favoritos' : 'Eliminado de favoritos';
+                    final snackBar = SnackBar(
+                      backgroundColor: const Color(0xFF9B5DE5),
+                      content: Text(
+                        message,
+                        style: TextStyle(
+                          color: isFav ? Colors.black : Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'calSans',
+                        ),
+                      ),
+                      duration: const Duration(seconds: 1),
+                      behavior: SnackBarBehavior.floating,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  },
                       ),
                     ],
                   ),

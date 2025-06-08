@@ -1,37 +1,46 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/models/playlist.dart';
+import 'package:myapp/services/shared_preferences_service.dart';
 
 class FavoritePlaylistController extends StateNotifier<List<Playlist>> {
-  FavoritePlaylistController() : super([
-    Playlist(
-      id: '1',
-      title: 'Power Boost para Correr Bajo la Lluvia',
-      addedAt: '2025-05-04',
-      image: 'assets/images/runner.png',
-    ),
-    Playlist(
-      id: '2',
-      title: 'Prueba',
-      addedAt: '2025-03-09',
-      image: 'assets/images/runner.png',
-    ),
-  ]);
+  final SharedPreferencesService _prefsService;
 
-  // Add favorite playlist
-  void addToPlaylistFavoriteList(Playlist playlist) {
-    if (!state.any((favoritePlaylist) => favoritePlaylist.id == playlist.id)) {
-      state = [...state, playlist.copyWith(isFavorite: true)];
+  FavoritePlaylistController(this._prefsService) : super([]) {
+    _loadFavorites();
+  }
+
+  // Cargar los favoritos desde SharedPreferences
+  Future<void> _loadFavorites() async {
+    final favoritePlaylists = await _prefsService.loadFavoritePlaylists();
+    if (favoritePlaylists.isEmpty) {
+      state = [];
+    } else {
+      state = favoritePlaylists;
     }
   }
 
-  // Delete from favorites
+  // Guardar la lista de favoritos en SharedPreferences
+  Future<void> _saveFavorites() async {
+    await _prefsService.saveFavoritePlaylists(state);
+  }
+
+  // Agregar una playlist a los favoritos
+  void addToPlaylistFavoriteList(Playlist playlist) {
+    if (!state.any((favoritePlaylist) => favoritePlaylist.id == playlist.id)) {
+      state = [...state, playlist.copyWith(isFavorite: true)];
+      _saveFavorites(); 
+    }
+  }
+
+  // Eliminar una playlist de los favoritos
   void removeFromFavoritePlaylistList(Playlist playlist) {
     state = state
         .where((favoritePlaylist) => favoritePlaylist.id != playlist.id)
         .toList();
+    _saveFavorites();
   }
 
-  // Toggle favorite playlist state 
+  
   void toggleFavoritePlaylist(Playlist playlist) {
     if (isFavorite(playlist.id)) {
       removeFromFavoritePlaylistList(playlist);
@@ -40,8 +49,8 @@ class FavoritePlaylistController extends StateNotifier<List<Playlist>> {
     }
   }
 
+ 
   bool isFavorite(String playlistId) {
-    return state.any((favoriteRecipe) => favoriteRecipe.id == playlistId);
+    return state.any((favoritePlaylist) => favoritePlaylist.id == playlistId);
   }
-
 }

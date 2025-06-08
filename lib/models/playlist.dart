@@ -43,7 +43,7 @@ class Playlist {
 
   factory Playlist.fromJson(Map<String, dynamic> json) => Playlist(
     id: json["id"],
-    title: json["name"],
+    title: json["title"],  
     image: json["image"],
     addedAt: json["addedAt"],
     isFavorite: json["isFavorite"] ?? false,
@@ -51,7 +51,7 @@ class Playlist {
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "name": title,
+    "title": title,  
     "image": image,
     "addedAt": addedAt,
     "isFavorite": isFavorite,

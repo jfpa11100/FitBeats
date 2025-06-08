@@ -19,6 +19,10 @@ class FavoriteListScreen extends ConsumerWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Text(
           'Favoritos',
           style: Theme.of(
@@ -75,10 +79,14 @@ class FavoriteListScreen extends ConsumerWidget {
                             isFavorite: playlist.isFavorite,
                             onPressed: () {
                               controller.toggleFavoritePlaylist(playlist);
-                              final message =
-                                  playlist.isFavorite
-                                      ? 'Añadido a favoritos'
-                                      : 'Eliminado de favoritos';
+                              final updatedIsFavorite = ref
+                                  .read(favoritePlaylistProvider)
+                                  .any((favPlaylist) => favPlaylist.id == playlist.id);
+
+                              final message = updatedIsFavorite
+                                  ? 'Añadido a favoritos'
+                                  : 'Eliminado de favoritos';
+                              
                               final snackBar = SnackBar(
                                 backgroundColor: purple,
                                 behavior: SnackBarBehavior.floating,
@@ -86,18 +94,15 @@ class FavoriteListScreen extends ConsumerWidget {
                                 content: Text(
                                   message,
                                   style: TextStyle(
-                                    color:
-                                        playlist.isFavorite
-                                            ? Colors.black
-                                            : Colors.white,
+                                    color: updatedIsFavorite
+                                        ? Colors.black
+                                        : Colors.white,
                                     fontWeight: FontWeight.w500,
                                     fontFamily: 'calSans',
                                   ),
                                 ),
                               );
-                              ScaffoldMessenger.of(
-                                context,
-                              ).showSnackBar(snackBar);
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
                             },
                           ),
                         ],
@@ -119,15 +124,13 @@ class FavoriteListScreen extends ConsumerWidget {
           if (index == 0) {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => const HomeScreen(title: 'FitBeats'),
-              ),
+              MaterialPageRoute(builder: (context) => const HomeScreen(title: 'FitBeats')),
             );
           } else if (index == 1) {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => const PlaylistScreen()),
-            // );
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const PlaylistScreen()),
+            );
           } else if (index == 2) {
             Navigator.push(
               context,
@@ -137,10 +140,7 @@ class FavoriteListScreen extends ConsumerWidget {
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favoritos',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favoritos'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ],
       ),

@@ -9,7 +9,6 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    // Acceso  perfil 
     final user = ref.watch(profileControllerProvider);
 
     if (user == null) {
@@ -20,6 +19,10 @@ class ProfileScreen extends ConsumerWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Text(
           'Perfil',
           style: Theme.of(context)
