@@ -5,7 +5,6 @@ import 'package:myapp/ui/profile_screen.dart';
 import '../providers/reproductor_provider.dart';
 import 'widgets/favorite_icon.dart';
 import 'widgets/song_title.dart';
-import 'package:myapp/models/playlist.dart';
 import 'package:myapp/providers/favorite_playlist_provider.dart';
 import 'auth/home/home_screen.dart';
 import 'favorite_list_screen.dart';
@@ -34,6 +33,7 @@ class PlaylistScreen extends ConsumerWidget {
       body: playlistState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) {
+          debugPrint("${error.toString()} and \n\n\n\n $stack \n\n\n\n");
           return Center(
             child: Text(error.toString()),
           );

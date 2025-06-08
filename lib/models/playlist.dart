@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:myapp/models/song.dart';
 
 Playlist playlistFromJson(String str) => Playlist.fromJson(json.decode(str));
@@ -41,17 +40,19 @@ class Playlist {
     );
   }
 
-  factory Playlist.fromJson(Map<String, dynamic> json) => Playlist(
+  factory Playlist.fromJson(Map<String, dynamic> json) {
+    return Playlist(
     id: json["id"],
-    title: json["title"],  
-    image: json["image"],
-    addedAt: json["addedAt"],
+    title: json["name"],  
+    image: json["image"] ?? '',
+    addedAt: json["addedAt"] ?? '',
     isFavorite: json["isFavorite"] ?? false,
   );
+  }
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "title": title,  
+    "name": title,  
     "image": image,
     "addedAt": addedAt,
     "isFavorite": isFavorite,

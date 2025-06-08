@@ -6,6 +6,8 @@ import 'package:myapp/ui/playlist_screen.dart';
 import 'package:myapp/ui/widgets/weather_widget.dart';
 
 class ActivityWidget extends StatefulWidget {
+  const ActivityWidget({super.key});
+
   @override
   State<ActivityWidget> createState() => _ActivityWidgetState();
 }

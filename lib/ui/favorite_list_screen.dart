@@ -129,7 +129,7 @@ class FavoriteListScreen extends ConsumerWidget {
           } else if (index == 1) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const PlaylistScreen()),
+              MaterialPageRoute(builder: (context) => const FavoriteListScreen()),
             );
           } else if (index == 2) {
             Navigator.push(
