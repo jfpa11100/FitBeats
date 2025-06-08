@@ -18,7 +18,7 @@ then
 
 and add the .env file to the root of the project.
 
-##Develop by:
+## Developed by:
 
 - Mariana Pineda Isaza
 - Juan Felipe Palacio Agudelo
