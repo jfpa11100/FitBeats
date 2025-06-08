@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:myapp/controllers/profile_controller.dart';
+import 'package:myapp/providers/profile_provider.dart';
 import 'package:myapp/ui/auth/login_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -9,7 +9,7 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final user = ref.watch(profileControllerProvider);
+    final user = ref.watch(profileProvider);
 
     if (user == null) {
       return const LoginScreen();
@@ -51,7 +51,7 @@ class ProfileScreen extends ConsumerWidget {
 
               ElevatedButton(
                 onPressed: () {
-                  ref.read(profileControllerProvider.notifier).logout(context); 
+                  ref.read(profileProvider.notifier).logout(context); 
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
                 },
                 child: const Text('Cerrar sesión'),

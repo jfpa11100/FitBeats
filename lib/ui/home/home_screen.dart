@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/ui/auth/home/widgets/activity_widget.dart';
+import 'package:myapp/ui/home/widgets/activity_widget.dart';
+import 'package:myapp/ui/layout/bottom_navbar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -21,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
         leading: Image.asset('assets/images/logo.png'),
       ),
       body: ActivityWidget(),
+      bottomNavigationBar: BottomNavBar(curIndex: 0),
     );
   }
 }
