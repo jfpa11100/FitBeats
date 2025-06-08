@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:myapp/models/playlist.dart';
+import 'package:myapp/providers/favorite_playlist_provider.dart';
+import 'package:myapp/providers/playlist_provider.dart';
 import 'package:myapp/ui/profile_screen.dart';
-import '../../providers/playlist_provider.dart';
-import 'widgets/favorite_icon.dart';
-import 'widgets/song_title.dart';
+import 'package:myapp/ui/widgets/favorite_icon.dart';
+import 'package:myapp/ui/widgets/song_title.dart';
 import 'auth/home/home_screen.dart';
 import 'favorite_list_screen.dart';
 
@@ -13,6 +15,15 @@ class PlaylistScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final playlistController = ref.watch(playlistProvider);
+    final favoriteController = ref.read(favoritePlaylistProvider.notifier);
+
+    final playlist = Playlist(
+      id: '1', 
+      title: 'Power Boost para Correr Bajo la Lluvia',
+      image: 'assets/images/runner.png',
+      addedAt: '2025-05-04',
+      isFavorite: ref.watch(favoritePlaylistProvider.select((state) => state.contains('1'))),
+    );
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -26,7 +37,7 @@ class PlaylistScreen extends ConsumerWidget {
       body: Column(
         children: [
           Text(
-            "Power Boost para Correr Bajo la Lluvia",
+            playlist.title, 
             style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
           ),
           const SizedBox(height: 16),
@@ -37,32 +48,33 @@ class PlaylistScreen extends ConsumerWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16),
                   child: Image.asset(
-                    'assets/images/runner.png',
+                    playlist.image ?? 'assets/images/default.png', 
                     height: 310,
                     width: 380,
                     fit: BoxFit.cover,
                   ),
                 ),
                 FavoriteIcon(
-                  isFavorite: playlistController.isFavorite,
+                  isFavorite: playlist.isFavorite,
                   onPressed: () {
-                    ref.read(playlistProvider).toggleFavorite();
-                    final isFav = ref.read(playlistProvider).isFavorite;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: const Color(0xFF9B5DE5),
-                        content: Text(
-                          isFav ? 'Añadido a favoritos' : 'Eliminado de favoritos',
-                          style: TextStyle(
-                            color: isFav ? Colors.black : Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'calSans',
-                          ),
+                    favoriteController.toggleFavoritePlaylist(playlist);
+                    
+                    final isFav = ref.read(favoritePlaylistProvider.notifier).isFavorite(playlist.id);
+                    final message = isFav ? 'Añadido a favoritos' : 'Eliminado de favoritos';
+                    final snackBar = SnackBar(
+                      backgroundColor: const Color(0xFF9B5DE5),
+                      content: Text(
+                        message,
+                        style: TextStyle(
+                          color: isFav ? Colors.black : Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'calSans',
                         ),
-                        duration: const Duration(seconds: 1),
-                        behavior: SnackBarBehavior.floating,
                       ),
+                      duration: const Duration(seconds: 1),
+                      behavior: SnackBarBehavior.floating,
                     );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   },
                 ),
               ],
