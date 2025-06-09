@@ -87,7 +87,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   isSelected: activitySelections['Ciclismo']!,
                   onChanged: (value) {
                     setState(() => activitySelections['Ciclismo'] = value);
-                    setState(() => searchQuery['cycling'] = 'walk');
+                    setState(() => searchQuery['cycling'] = 'cycling');
                   },
                 ),
               ],
