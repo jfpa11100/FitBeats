@@ -68,6 +68,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   text: 'Caminar',
                   isSelected: activitySelections['Caminar']!,
                   onChanged: (value) {
+                    resetActivitySelections();
                     setState(() => activitySelections['Caminar'] = value);
                     setState(() => searchQuery['activity'] = 'walk');
                   },
@@ -77,6 +78,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   text: 'Correr',
                   isSelected: activitySelections['Correr']!,
                   onChanged: (value) {
+                    resetActivitySelections();
                     setState(() => activitySelections['Correr'] = value);
                     setState(() => searchQuery['activity'] = 'running');
                   },
@@ -86,6 +88,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   text: 'Ciclismo',
                   isSelected: activitySelections['Ciclismo']!,
                   onChanged: (value) {
+                    resetActivitySelections();
                     setState(() => activitySelections['Ciclismo'] = value);
                     setState(() => searchQuery['cycling'] = 'cycling');
                   },
@@ -101,6 +104,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   text: 'Gym',
                   isSelected: activitySelections['Gym']!,
                   onChanged: (value) {
+                    resetActivitySelections();
                     setState(() => activitySelections['Gym'] = value);
                     setState(() => searchQuery['activity'] = 'gym');
                   },
@@ -110,6 +114,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   text: 'Yoga',
                   isSelected: activitySelections['Yoga']!,
                   onChanged: (value) {
+                    resetActivitySelections();
                     setState(() => activitySelections['Yoga'] = value);
                     setState(() => searchQuery['activity'] = 'yoga');
                   },
@@ -119,6 +124,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   text: 'HIIT',
                   isSelected: activitySelections['HIIT']!,
                   onChanged: (value) {
+                    resetActivitySelections();
                     setState(() => activitySelections['HIIT'] = value);
                     setState(() => searchQuery['activity'] = 'HIIT');
                   },
@@ -144,8 +150,9 @@ class _ActivityWidgetState extends State<ActivityWidget> {
               iconSize: 45,
               isSelected: moodSelections['excited']!,
               onChanged: (value) {
+                resetEmotionsSelections();
                 setState(() => moodSelections['excited'] = value);
-                setState(() => searchQuery['mood'] = '');
+                setState(() => searchQuery['mood'] = 'excited');
               },
             ),
             ActivityButton(
@@ -158,6 +165,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
               iconSize: 45,
               isSelected: moodSelections['happy']!,
               onChanged: (value) {
+                resetEmotionsSelections();
                 setState(() => moodSelections['happy'] = value);
                 setState(() => searchQuery['mood'] = 'happy');
               },
@@ -172,6 +180,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
               iconSize: 45,
               isSelected: moodSelections['']!,
               onChanged: (value) {
+                resetEmotionsSelections();
                 setState(() => moodSelections[''] = value);
                 setState(() => searchQuery['mood'] = '');
               },
@@ -186,6 +195,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
               iconSize: 45,
               isSelected: moodSelections['sad']!,
               onChanged: (value) {
+                resetEmotionsSelections();
                 setState(() => moodSelections['sad'] = value);
                 setState(() => searchQuery['mood'] = 'sad');
               },
@@ -218,5 +228,19 @@ class _ActivityWidgetState extends State<ActivityWidget> {
         ),
       ],
     );
+  }
+  
+  resetActivitySelections() {
+    activitySelections.forEach((key, value) {
+      activitySelections[key] = false;
+    });
+    searchQuery['activity'] = null;
+  }
+
+  resetEmotionsSelections(){
+    moodSelections.forEach((key, value) {
+      moodSelections[key] = false;
+    });
+    searchQuery['mood'] = null;
   }
 }
